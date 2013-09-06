@@ -9,23 +9,23 @@ class PlayerState
     warrior.health < 14
   end
 
+  def path_clear?(warrior, direction = :forward)
+    warrior.look.all? { |space| space.empty? }
+  end
+
   def look_for_enemy?(warrior, direction = :forward, unit = nil)
     sees = warrior.look(direction)
-    puts "sees #{sees} #{direction}"
 
     warrior.look(direction).each do |space|
       if space.captive?
-        puts "sees captive #{direction}"
         return false
       end
 
       if space.enemy? && (unit == nil || space.unit.class == unit)
-        puts "sees #{unit || 'enemy'} #{direction}"
         return true
       end
     end
 
-    puts "sees no enemy #{direction}"
     false
   end
 
@@ -54,7 +54,7 @@ class PlayerState
   end
 
   def flee(warrior)
-    if endangered?(warrior) && under_attack?(warrior)
+    if endangered?(warrior) && under_attack?(warrior) && path_clear?(warrior, :behind)
       Fleeing.new(@player)
     else
       nil

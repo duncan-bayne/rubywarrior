@@ -9,6 +9,7 @@ class Rescuing < PlayerState
 
   def transition(warrior)
     flee(warrior) ||
+      shoot(warrior) ||
       walk(warrior) ||
       rest(warrior) ||
       self
