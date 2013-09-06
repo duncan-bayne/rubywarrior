@@ -2,6 +2,7 @@ require_relative 'fighting.rb'
 require_relative 'fleeing.rb'
 require_relative 'rescuing.rb'
 require_relative 'resting.rb'
+require_relative 'shooting.rb'
 require_relative 'walking.rb'
 
 class Player

@@ -9,6 +9,15 @@ class PlayerState
     warrior.health < 14
   end
 
+  def enemy_ahead?(warrior)
+    warrior.look.each do |space|
+      return false if space.captive?
+      return true if space.enemy?
+    end
+
+    false
+  end
+
   def facing_captive?(warrior)
     warrior.feel.captive?
   end

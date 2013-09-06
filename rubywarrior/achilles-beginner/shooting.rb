@@ -1,9 +1,9 @@
 require_relative 'player_state.rb'
 
-class Rescuing < PlayerState
+class Shooting < PlayerState
 
   def go(warrior)
-    warrior.rescue!
+    warrior.shoot!
     super
   end
 
@@ -13,19 +13,15 @@ class Rescuing < PlayerState
       return Fleeing.new(@player)
     end
 
-    if enemy_ahead?(warrior)
-      return Shooting.new(@player)
-    end
-
-    if !facing_captive?(warrior)
-      return Walking.new(@player)
-    end
-
     if wounded?(warrior) && !under_attack?(warrior)
       return Resting.new(@player)
     end
 
-    self
-  end
+    if !enemy_ahead?(warrior)
+      return Walking.new(@player)
+    end
 
+    self
+
+  end
 end
