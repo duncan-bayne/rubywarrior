@@ -9,12 +9,23 @@ class PlayerState
     warrior.health < 14
   end
 
-  def enemy_ahead?(warrior)
-    warrior.look.each do |space|
-      return false if space.captive?
-      return true if space.enemy?
+  def look_for_enemy?(warrior, direction = :forward, unit = nil)
+    sees = warrior.look(direction)
+    puts "sees #{sees} #{direction}"
+
+    warrior.look(direction).each do |space|
+      if space.captive?
+        puts "sees captive #{direction}"
+        return false
+      end
+
+      if space.enemy? && (unit == nil || space.unit.class == unit)
+        puts "sees #{unit || 'enemy'} #{direction}"
+        return true
+      end
     end
 
+    puts "sees no enemy #{direction}"
     false
   end
 
@@ -40,6 +51,69 @@ class PlayerState
 
   def wounded?(warrior)
     warrior.health < 20
+  end
+
+  def flee(warrior)
+    if endangered?(warrior) && under_attack?(warrior)
+      Fleeing.new(@player)
+    else
+      nil
+    end
+  end
+
+  def rest(warrior)
+    if wounded?(warrior) && !under_attack?(warrior) && !look_for_enemy?(warrior)
+      Resting.new(@player)
+    else
+      nil
+    end
+  end
+
+  def walk(warrior)
+    if !wounded?(warrior) && !under_attack?(warrior) && !look_for_enemy?(warrior)
+      Walking.new(@player)
+    else
+      nil
+    end
+  end
+
+  def fight(warrior)
+    if facing_enemy?(warrior)
+      Fighting.new(@player)
+    else
+      nil
+    end
+  end
+
+  def shoot(warrior)
+    direction = choose_target(warrior)
+    if direction
+      Shooting.new(@player)
+    else
+      nil
+    end
+  end
+
+  def resque(warrior)
+    if facing_captive?(warrior)
+      Rescuing.new(@player)
+    else
+      nil
+    end
+  end
+
+  def choose_target(warrior)
+    if look_for_enemy?(warrior, :forward, RubyWarrior::Units::Archer)
+      :forward
+    elsif look_for_enemy?(warrior, :backward, RubyWarrior::Units::Archer)
+      :backward
+    elsif look_for_enemy?(warrior, :forward)
+      :forward
+    elsif look_for_enemy?(warrior, :backward)
+      :backward
+    else
+      nil
+    end
   end
 
 end

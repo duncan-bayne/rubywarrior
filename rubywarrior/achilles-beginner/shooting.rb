@@ -3,25 +3,14 @@ require_relative 'player_state.rb'
 class Shooting < PlayerState
 
   def go(warrior)
-    warrior.shoot!
+    warrior.shoot!(choose_target(warrior))
     super
   end
 
   def transition(warrior)
-
-    if endangered?(warrior) && under_attack?(warrior)
-      return Fleeing.new(@player)
-    end
-
-    if wounded?(warrior) && !under_attack?(warrior)
-      return Resting.new(@player)
-    end
-
-    if !enemy_ahead?(warrior)
-      return Walking.new(@player)
-    end
-
-    self
-
+    flee(warrior) ||
+      rest(warrior) ||
+      walk(warrior) ||
+      self
   end
 end

@@ -13,27 +13,11 @@ class Walking < PlayerState
   end
 
   def transition(warrior)
-
-    if endangered?(warrior) && under_attack?(warrior)
-      return Fleeing.new(@player)
-    end
-
-    if facing_enemy?(warrior)
-      return Fighting.new(@player)
-    end
-
-    if enemy_ahead?(warrior)
-      return Shooting.new(@player)
-    end
-
-    if facing_captive?(warrior)
-      return Rescuing.new(@player)
-    end
-
-    if wounded?(warrior) && !under_attack?(warrior)
-      return Resting.new(@player)
-    end
-
-    self
+    flee(warrior) ||
+      fight(warrior) ||
+      shoot(warrior) ||
+      resque(warrior) ||
+      rest(warrior) ||
+      self
   end
 end

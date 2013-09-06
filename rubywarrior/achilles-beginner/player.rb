@@ -7,13 +7,6 @@ require_relative 'walking.rb'
 
 class Player
 
-  attr_accessor :direction
-
-  def initialize
-    self.direction = :backward
-    super
-  end
-
   def play_turn(warrior)
 
     unless @old_state
